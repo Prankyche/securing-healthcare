@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Secure Healthcare IDS</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
+    <style>
+        body { font-family: Arial; background: #0b1220; color: white; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px; border-bottom: 1px solid #333; }
+        .danger { color: red; }
+        .safe { color: lime; }
+        .warn { color: orange; }
+    </style>
+</head>
+
+<body>
+
+<h1>Hospital Network Intrusion Detection</h1>
+
+<table>
+<thead>
+<tr>
+<th>Attack</th>
+<th>Confidence</th>
+<th>Severity</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="log"></tbody>
+</table>
+
+<script>
+const socket = io();
+socket.on("connect",() =>{
+    console.log("Connected to server");
+});
+
+socket.on("new_packet", data => {
+
+    const row = document.createElement("tr");
+
+    let color = data.status === "Normal" ? "safe" : "danger";
+
+    row.innerHTML = `
+        <td class="${color}">${data.attack}</td>
+        <td>${(data.confidence*100).toFixed(2)}%</td>
+        <td class="warn">${data.severity}</td>
+        <td>${data.action}</td>
+    `;
+
+    document.getElementById("log").prepend(row);
+});
+</script>
+
+</body>
+</html>

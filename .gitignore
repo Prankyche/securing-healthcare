@@ -1,0 +1,16 @@
+Datasets/
+*.csv
+*.xlsx
+*.h5
+*.pt
+*.pth
+*.pkl
+__pycache__/
+venv/
+.env
+ccp/
+*.save
+*.keras
+*.npy
+*.h5
+*.pkl
