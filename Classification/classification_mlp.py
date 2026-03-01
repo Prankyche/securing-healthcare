@@ -9,9 +9,6 @@ from tensorflow.keras.layers import Dense, Dropout
 # import matplotlib.pyplot as plt
 # import seaborn as sns
 
-# ==========================
-# 1. Load dataset
-# ==========================
 datapath = r"C:\Users\prann\Desktop\ccp_securehealthcare_final\Classification\dataset2.csv"
 df = pd.read_csv(datapath, low_memory=False)
 
@@ -31,9 +28,6 @@ x_columns = [
 # Target column
 y_column = 'label'
 
-# ==========================
-# 2. 7+1 class mapping
-# ==========================
 dict_7classes = {
     'DDoS-RSTFINFlood':'DDoS','DDoS-PSHACK_Flood':'DDoS','DDoS-SYN_Flood':'DDoS',
     'DDoS-UDP_Flood':'DDoS','DDoS-TCP_Flood':'DDoS','DDoS-ICMP_Flood':'DDoS',
@@ -63,29 +57,20 @@ dict_7classes = {
 }
 
 df['label_7'] = df[y_column].map(dict_7classes)
-df.dropna(subset=['label_7'], inplace=True)  # remove any unmapped rows
+df.dropna(subset=['label_7'], inplace=True)
 
-# ==========================
-# 3. Preprocessing
-# ==========================
-# Convert features to numeric
+
 df[x_columns] = df[x_columns].apply(pd.to_numeric, errors='coerce')
 df.dropna(subset=x_columns, inplace=True)
 
-# Scale features
 scaler = StandardScaler()
 X = scaler.fit_transform(df[x_columns])
 
-# Encode target
 le = LabelEncoder()
 y = le.fit_transform(df['label_7'])
 
-# Train-test split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42, stratify=y)
 
-# ==========================
-# 4. Build MLP model
-# ==========================
 num_classes = len(np.unique(y))
 
 model = Sequential([
@@ -99,9 +84,6 @@ model = Sequential([
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 model.summary()
 
-# ==========================
-# 5. Train model
-# ==========================
 history = model.fit(
     X_train, y_train,
     validation_split=0.2,
@@ -110,9 +92,6 @@ history = model.fit(
     verbose=1
 )
 
-# ==========================
-# 6. Evaluate model
-# ==========================
 y_pred = np.argmax(model.predict(X_test), axis=1)
 
 print("\n##### MLP (7+1 Classes) #####")
@@ -120,14 +99,3 @@ print("Accuracy :", accuracy_score(y_test, y_pred))
 print("Recall   :", recall_score(y_test, y_pred, average='macro'))
 print("Precision:", precision_score(y_test, y_pred, average='macro'))
 print("F1-score :", f1_score(y_test, y_pred, average='macro'))
-
-# ==========================
-# 7. Confusion Matrix
-# ==========================
-# cm = confusion_matrix(y_test, y_pred)
-# plt.figure(figsize=(10,8))
-# sns.heatmap(cm, annot=True, fmt='d', xticklabels=le.classes_, yticklabels=le.classes_, cmap="Blues")
-# plt.ylabel('Actual')
-# plt.xlabel('Predicted')
-# plt.title('Confusion Matrix (MLP)')
-# plt.show()

@@ -7,27 +7,17 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score
 
-# =====================================================
-# 1. LOAD DATASET
-# =====================================================
 datapath = r"C:\Users\prann\Desktop\ccp_securehealthcare_final\Classification\dataset2.csv"
 
 print("Loading dataset...")
 df = pd.read_csv(datapath, low_memory=False)
 
-# Shuffle to avoid order bias
 df = df.sample(frac=1, random_state=42).reset_index(drop=True)
 
-# =====================================================
-# 2. TRAIN–TEST SPLIT (80 / 20)
-# =====================================================
 split = int(len(df) * 0.8)
 train_df = df.iloc[:split].copy()
 test_df  = df.iloc[split:].copy()
 
-# =====================================================
-# 3. FEATURE & LABEL COLUMNS
-# =====================================================
 x_columns = [
     'flow_duration', 'Header_Length', 'Protocol Type', 'Duration',
     'Rate', 'Srate', 'Drate', 'fin_flag_number', 'syn_flag_number',
@@ -43,31 +33,22 @@ x_columns = [
 
 y_column = 'label'
 
-# =====================================================
-# 4. NUMERIC CONVERSION + CLEANING
-# =====================================================
 train_df[x_columns] = train_df[x_columns].apply(pd.to_numeric, errors='coerce')
 test_df[x_columns]  = test_df[x_columns].apply(pd.to_numeric, errors='coerce')
 
 train_df.dropna(inplace=True)
 test_df.dropna(inplace=True)
 
-# Ensure labels are strings
 train_df[y_column] = train_df[y_column].astype(str)
 test_df[y_column]  = test_df[y_column].astype(str)
 
-# =====================================================
-# 5. FEATURE SCALING (FIT ONLY ON TRAIN)
-# =====================================================
+
 scaler = StandardScaler()
 scaler.fit(train_df[x_columns])
 
 train_df[x_columns] = scaler.transform(train_df[x_columns])
 test_df[x_columns]  = scaler.transform(test_df[x_columns])
 
-# =====================================================
-# 6. 34-CLASS LOGISTIC REGRESSION
-# =====================================================
 model_34 = LogisticRegression(
     solver="lbfgs",
     multi_class="multinomial",
@@ -88,9 +69,7 @@ print("Recall   :", recall_score(y_test_34, y_pred_34, average='macro'))
 print("Precision:", precision_score(y_test_34, y_pred_34, average='macro'))
 print("F1-score :", f1_score(y_test_34, y_pred_34, average='macro'))
 
-# =====================================================
-# 7. 7+1 CLASS MAPPING (TOTAL 8 CLASSES)
-# =====================================================
+
 dict_7classes = {
     'DDoS-RSTFINFlood':'DDoS','DDoS-PSHACK_Flood':'DDoS','DDoS-SYN_Flood':'DDoS',
     'DDoS-UDP_Flood':'DDoS','DDoS-TCP_Flood':'DDoS','DDoS-ICMP_Flood':'DDoS',
@@ -125,9 +104,6 @@ test_df['label_7']  = test_df[y_column].map(dict_7classes)
 train_df.dropna(subset=['label_7'], inplace=True)
 test_df.dropna(subset=['label_7'], inplace=True)
 
-# =====================================================
-# 8. 7+1 CLASS LOGISTIC REGRESSION
-# =====================================================
 model_7 = LogisticRegression(
     solver="lbfgs",
     multi_class="multinomial",

@@ -8,14 +8,7 @@ df = pd.read_csv("/Datasets/dataset2.csv")
 sample_df = df[df['label']!= "BenignTraffic"].sample(1)
 rl_engine = RLDecisionEngine()
 rl_engine.train()
-#
-# anomaly = detect_anomaly(sample_df)
-#
-# if anomaly["is_anomaly"] == 1:
-#     cls_out = rf_to_rl(sample_df)
-#     action = rl.decide(cls_out["attack_type"], cls_out["severity"])
-#
-# sample_df = df.iloc[[i]]  # simulated traffic
+
 print("Driver columns")
 print(sample_df.columns.tolist())
 anomaly_out = detect_anomaly(sample_df)
