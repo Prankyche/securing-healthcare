@@ -1,53 +1,161 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Secure Healthcare IDS</title>
+    <title>Secure Healthcare AI Defense System</title>
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 
     <style>
-        body { font-family: Arial; background: #0b1220; color: white; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 10px; border-bottom: 1px solid #333; }
-        .danger { color: red; }
-        .safe { color: lime; }
-        .warn { color: orange; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f172a, #020617);
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            padding: 20px;
+            text-align: center;
+            background: #111827;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .cards {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            flex: 1;
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(0,0,0,0.4);
+        }
+
+        .card h2 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        .status-normal { color: #22c55e; }
+        .status-anomaly { color: #ef4444; }
+
+        .severity-0 { color: #22c55e; }
+        .severity-1 { color: #facc15; }
+        .severity-2 { color: #ef4444; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #0f172a;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th {
+            background: #1e293b;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        tr:hover {
+            background: #1e293b;
+        }
+
+        .action-highlight {
+            font-weight: bold;
+            color: #38bdf8;
+        }
     </style>
 </head>
 
 <body>
 
-<h1>Hospital Network Intrusion Detection</h1>
+<header>
+    AI-Powered Healthcare IoT Security Dashboard
+</header>
 
-<table>
-<thead>
-<tr>
-<th>Attack</th>
-<th>Confidence</th>
-<th>Severity</th>
-<th>Action</th>
-</tr>
-</thead>
+<div class="container">
 
-<tbody id="log"></tbody>
-</table>
+    <div class="cards">
+        <div class="card">
+            <div>Total Packets</div>
+            <h2 id="totalPackets">0</h2>
+        </div>
+
+        <div class="card">
+            <div>Anomalies Detected</div>
+            <h2 id="totalAnomalies" class="status-anomaly">0</h2>
+        </div>
+
+        <div class="card">
+            <div>System Status</div>
+            <h2 id="systemStatus" class="status-normal">SECURE</h2>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Status</th>
+                <th>Attack Type</th>
+                <th>Confidence</th>
+                <th>Severity</th>
+                <th>RL Action</th>
+            </tr>
+        </thead>
+        <tbody id="log"></tbody>
+    </table>
+
+</div>
 
 <script>
 const socket = io();
-socket.on("connect",() =>{
-    console.log("Connected to server");
-});
+
+let totalPackets = 0;
+let totalAnomalies = 0;
 
 socket.on("new_packet", data => {
 
+    totalPackets++;
+    document.getElementById("totalPackets").innerText = totalPackets;
+
+    if(data.status === "Anomaly"){
+        totalAnomalies++;
+        document.getElementById("totalAnomalies").innerText = totalAnomalies;
+        document.getElementById("systemStatus").innerText = "THREAT DETECTED";
+        document.getElementById("systemStatus").className = "status-anomaly";
+    } else {
+        document.getElementById("systemStatus").innerText = "SECURE";
+        document.getElementById("systemStatus").className = "status-normal";
+    }
+
     const row = document.createElement("tr");
 
-    let color = data.status === "Normal" ? "safe" : "danger";
-
     row.innerHTML = `
-        <td class="${color}">${data.attack}</td>
+        <td class="${data.status === "Normal" ? "status-normal" : "status-anomaly"}">
+            ${data.status}
+        </td>
+        <td>${data.attack}</td>
         <td>${(data.confidence*100).toFixed(2)}%</td>
-        <td class="warn">${data.severity}</td>
-        <td>${data.action}</td>
+        <td class="severity-${data.severity}">
+            ${data.severity === 0 ? "Low" : data.severity === 1 ? "Medium" : "High"}
+        </td>
+        <td class="action-highlight">${data.action}</td>
     `;
 
     document.getElementById("log").prepend(row);
@@ -56,3 +164,62 @@ socket.on("new_packet", data => {
 
 </body>
 </html>
+
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--<head>-->
+<!--    <title>Secure Healthcare IDS</title>-->
+<!--    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>-->
+
+<!--    <style>-->
+<!--        body { font-family: Arial; background: #0b1220; color: white; }-->
+<!--        table { width: 100%; border-collapse: collapse; }-->
+<!--        th, td { padding: 10px; border-bottom: 1px solid #333; }-->
+<!--        .danger { color: red; }-->
+<!--        .safe { color: lime; }-->
+<!--        .warn { color: orange; }-->
+<!--    </style>-->
+<!--</head>-->
+
+<!--<body>-->
+
+<!--<h1>Hospital Network Intrusion Detection</h1>-->
+
+<!--<table>-->
+<!--<thead>-->
+<!--<tr>-->
+<!--<th>Attack</th>-->
+<!--<th>Confidence</th>-->
+<!--<th>Severity</th>-->
+<!--<th>Action</th>-->
+<!--</tr>-->
+<!--</thead>-->
+
+<!--<tbody id="log"></tbody>-->
+<!--</table>-->
+
+<!--<script>-->
+<!--const socket = io();-->
+<!--socket.on("connect",() =>{-->
+<!--    console.log("Connected to server");-->
+<!--});-->
+
+<!--socket.on("new_packet", data => {-->
+
+<!--    const row = document.createElement("tr");-->
+
+<!--    let color = data.status === "Normal" ? "safe" : "danger";-->
+
+<!--    row.innerHTML = `-->
+<!--        <td class="${color}">${data.attack}</td>-->
+<!--        <td>${(data.confidence*100).toFixed(2)}%</td>-->
+<!--        <td class="warn">${data.severity}</td>-->
+<!--        <td>${data.action}</td>-->
+<!--    `;-->
+
+<!--    document.getElementById("log").prepend(row);-->
+<!--});-->
+<!--</script>-->
+
+<!--</body>-->
+<!--</html>-->

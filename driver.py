@@ -4,7 +4,7 @@ from Classification.classification_randomforest import rf_to_rl
 from Anomaly_Detection.autoencoder_train import detect_anomaly
 from Decision_Making.decisionmaking_model import RLDecisionEngine as rl, RLDecisionEngine
 
-df = pd.read_csv("/Datasets/dataset2.csv")
+df = pd.read_csv("Datasets/dataset2.csv")
 sample_df = df[df['label']!= "BenignTraffic"].sample(1)
 rl_engine = RLDecisionEngine()
 rl_engine.train()

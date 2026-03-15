@@ -11,7 +11,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv1D, MaxPooling1D, LSTM, Dense, Dropout
 from tensorflow.keras.utils import to_categorical
 
-datapath = "C:\\Users\\prann\\Desktop\\ccp_securehealthcare_final\\Classification\\dataset2.csv"
+datapath = r"C:\Users\prann\Desktop\ccp_securehealthcare_final\Datasets\dataset4.csv"
 df = pd.read_csv(datapath, low_memory=False)
 
 x_columns = [

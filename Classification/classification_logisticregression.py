@@ -7,7 +7,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score
 
-datapath = r"C:\Users\prann\Desktop\ccp_securehealthcare_final\Classification\dataset2.csv"
+datapath = r"C:\Users\prann\Desktop\ccp_securehealthcare_final\Datasets\dataset4.csv"
 
 print("Loading dataset...")
 df = pd.read_csv(datapath, low_memory=False)
@@ -57,18 +57,18 @@ model_34 = LogisticRegression(
     n_jobs=-1
 )
 
-print("\nTraining 34-class model...")
-model_34.fit(train_df[x_columns], train_df[y_column])
-
-y_pred_34 = model_34.predict(test_df[x_columns])
-y_test_34 = test_df[y_column]
-
-print("\n##### LogisticRegression (34 Classes) #####")
-print("Accuracy :", accuracy_score(y_test_34, y_pred_34))
-print("Recall   :", recall_score(y_test_34, y_pred_34, average='macro'))
-print("Precision:", precision_score(y_test_34, y_pred_34, average='macro'))
-print("F1-score :", f1_score(y_test_34, y_pred_34, average='macro'))
-
+# print("\nTraining 34-class model...")
+# model_34.fit(train_df[x_columns], train_df[y_column])
+#
+# y_pred_34 = model_34.predict(test_df[x_columns])
+# y_test_34 = test_df[y_column]
+#
+# print("\n##### LogisticRegression (34 Classes) #####")
+# print("Accuracy :", accuracy_score(y_test_34, y_pred_34))
+# print("Recall   :", recall_score(y_test_34, y_pred_34, average='macro'))
+# print("Precision:", precision_score(y_test_34, y_pred_34, average='macro'))
+# print("F1-score :", f1_score(y_test_34, y_pred_34, average='macro'))
+#
 
 dict_7classes = {
     'DDoS-RSTFINFlood':'DDoS','DDoS-PSHACK_Flood':'DDoS','DDoS-SYN_Flood':'DDoS',

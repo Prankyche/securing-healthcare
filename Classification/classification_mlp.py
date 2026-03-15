@@ -9,7 +9,7 @@ from tensorflow.keras.layers import Dense, Dropout
 # import matplotlib.pyplot as plt
 # import seaborn as sns
 
-datapath = r"C:\Users\prann\Desktop\ccp_securehealthcare_final\Classification\dataset2.csv"
+datapath = r"C:\Users\prann\Desktop\ccp_securehealthcare_final\Datasets\dataset4.csv"
 df = pd.read_csv(datapath, low_memory=False)
 
 # Columns to use as features
